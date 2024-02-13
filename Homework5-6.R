@@ -4,6 +4,11 @@ library(Biostrings)
 library(seqinr)
 library(phangorn)
 library(UniprotR)
+library(protti)
+
+install.packages("UniprotR")
+install.packages("protti")
+install.packages("DelayedArray")
 
 
 mySequenceFile <- system.file("Horse/sequence-1.fasta", package="msa")
@@ -72,10 +77,6 @@ write.phyDat(Alignment_phyDat, "FUllSequence.fasta", format = "fasta")
 
 BiocManager::install("GenomicAlignments")
 
-install.packages("UniprotR")
-install.packages("protti")
-install.packages("DelayedArray")
-
 ?writeXStringSet
 Biostrings::writeXStringSet("Horse/sequence_2.fasta")
 writeXStringSet(AA_string, "Horse/sequence_2_AminoAcid.fasta", append=FALSE)
@@ -91,3 +92,30 @@ ReadAccessionNumbers
 ReadAccessionNumbers$A0A5C6NVL2
 
 GeneOntologyTerms <- GetProteinGOInfo(ReadAccessionNumbers)
+GeneOntologyTerms <- GetProteinGOInfo(read.csv("UniprotRAccessionNumbers/AccessionNumbers.txt"))
+GeneOntologyTerms <- GetProteinGOInfo(Test$AccessionNumbers)
+
+?GetProteinGOInfo
+
+# "P0A799"
+
+GeneOntologyTerms <- GetProteinGOInfo("P0A799")
+PlotGoInfo(GeneOntologyTerms)
+
+class(Test)
+
+# test reads the information vertically
+
+GeneOntologyTerms <- GetProteinGOInfo("A0A5C6NVL2")
+
+PlotGoInfo(AC1)
+
+#Tried up to here with GO information with no success, moving on
+
+Fetch <- fetch_uniprot("P0A799")
+
+View(Fetch)
+
+#1ZMR is our code
+
+fetch_alphafold_prediction("1ZMR")
