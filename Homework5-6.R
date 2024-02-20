@@ -6,9 +6,9 @@ library(phangorn)
 library(UniprotR)
 library(protti)
 
-install.packages("UniprotR")
-install.packages("protti")
-install.packages("DelayedArray")
+# install.packages("UniprotR")
+# install.packages("protti")
+# install.packages("DelayedArray")
 
 
 mySequenceFile <- system.file("Horse/sequence-1.fasta", package="msa")
@@ -21,7 +21,7 @@ seq_5 <- readDNAStringSet("Horse/sequence-5.fasta")
 
 MySequences <- readDNAStringSet("Horse/sequence-1.fasta")
 
-ClustalW
+# ClustalW
 
 NewSequence <- readDNAStringSet("FullSequence.fasta")
 
@@ -73,38 +73,49 @@ AA_string
 
 AA_string <- Biostrings::translate(seq_2)
 
-install.packages("phangorn")
+# install.packages("phangorn")
+library(phangorn)
 
 Alignment_phyDat <- msaConvert(myFirstAlignment, type="phangorn::phyDat")
 
 write.phyDat(Alignment_phyDat, "FUllSequence.fasta", format = "fasta")
 
-BiocManager::install("GenomicAlignments")
+# BiocManager::install("GenomicAlignments")
 
 ?writeXStringSet
 Biostrings::writeXStringSet("Horse/sequence_2.fasta")
 writeXStringSet(AA_string, "Horse/sequence_2_AminoAcid.fasta", append=FALSE)
 
-A0A5C6NVL2
-A0A7K5Q6Y4
-A0A9N7VP42
-A0A099YVD3
-A0A811Z0W7
+# A0A5C6NVL2
+# A0A7K5Q6Y4
+# A0A9N7VP42
+# A0A099YVD3
+# A0A811Z0W7
 
 ReadAccessionNumbers <- read.csv("UniprotRAccessionNumbers/AccessionNumbers.txt")
 ReadAccessionNumbers
-ReadAccessionNumbers$A0A5C6NVL2
+# change value after the dollar sign to the column name:
+ReadAccessionNumbers$AccessionNumbers
 
-GeneOntologyTerms <- GetProteinGOInfo(ReadAccessionNumbers)
-GeneOntologyTerms <- GetProteinGOInfo(read.csv("UniprotRAccessionNumbers/AccessionNumbers.txt"))
-GeneOntologyTerms <- GetProteinGOInfo(Test$AccessionNumbers)
+# this would read all AccessionNumbers
+GeneOntologyTerms <- GetProteinGOInfo(ReadAccessionNumbers$AccessionNumbers)
+
+# adding the [1] reads just the first item, just testing to see if it works, and it does
+GeneOntologyTerms <- GetProteinGOInfo(ReadAccessionNumbers$AccessionNumbers[1])
+# GeneOntologyTerms <- GetProteinGOInfo(read.csv("UniprotRAccessionNumbers/AccessionNumbers.txt"))
+# GeneOntologyTerms <- GetProteinGOInfo(Test$AccessionNumbers) # not sure what the Test variable is
 
 ?GetProteinGOInfo
 
 # "P0A799"
 
-GeneOntologyTerms <- GetProteinGOInfo("P0A799")
-PlotGoInfo(GeneOntologyTerms)
+# GeneOntologyTerms <- GetProteinGOInfo("P0A799")
+# one of the three columns returned no results
+GeneOntologyTerms
+# so we if replace it with a character value of "NA", it will plot
+GeneOntologyTerms[1,4] <- "NA"
+# we can also add a directory path to save the file to your computer:
+PlotGoInfo(GeneOntologyTerms, directorypath = "GoInfoPlot")
 
 class(Test)
 
@@ -121,5 +132,5 @@ Fetch <- fetch_uniprot("P0A799")
 View(Fetch)
 
 #1ZMR is our code
-
+# this accession number had issues for some people. not sure why. The code looks correct
 fetch_alphafold_prediction("1ZMR")
