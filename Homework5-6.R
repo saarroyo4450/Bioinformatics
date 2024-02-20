@@ -35,9 +35,9 @@ print(NewSequence, show="complete")
 
 DNA_Sequence <- DNAString(NewSequence)
 
-Aignment <- DNAStringSet(c(NewSequence))
+Alignment <- DNAStringSet(c(NewSequence))
 
-alignment_freq <- letterFrequency(alignment)
+alignment_freq <- letterFrequency(Alignment)
 
 ?letteralignment
 ?letterFrequency
@@ -65,7 +65,11 @@ max(d)
 
 translate(seq_1)
 
-DNA_string <- DNAString(seq_1)
+DNA_string <- DNAString(seq_2)
+
+seq_2
+
+AA_string
 
 AA_string <- Biostrings::translate(seq_2)
 
@@ -106,7 +110,7 @@ class(Test)
 
 # test reads the information vertically
 
-GeneOntologyTerms <- GetProteinGOInfo("A0A5C6NVL2")
+GeneOntologyTerms <- GetProteinGOInfo("A0A5FC6NVL2")
 
 PlotGoInfo(AC1)
 
