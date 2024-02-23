@@ -7,16 +7,18 @@ library(phangorn)
 library(GenomicAlignments)
 library(UniprotR)
 library(protti)
+library(dplyr)
 
 # Now that I have installed the necessary packages I can first begin by 
 # creating a variable that will read the 20 human sequences that were 
 # provided for me.
 
-My20Sequences <- readDNAStringSet("sequences.fasta")
+# duplicate line. Used same readDNAStringSet function to read in sequences below
+# My20Sequences <- readDNAStringSet("sequences.fasta")
 
 # Now we can use this variable to align our 20 sequences in R.
 
-The20SequencesAligned <- msa(My20Sequences)
+# The20SequencesAligned <- msa(My20Sequences)
 
 # We have successfully aligned our 20 sequences. lets see what we have done 
 # with the print command. This will allow me to check for anything unusual 
@@ -26,7 +28,9 @@ The20SequencesAligned <- msa(My20Sequences)
 # to seqinr format and computing a distance matrix. 
 
 PatientsInSeqinr <- readDNAStringSet("sequences.fasta")
-names(PatientsInSeqinr) <- c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20")
+# generally not a good idea to name things as a number, because R considers it 
+# to be a number instead of a character. Something like "H1", "H2" would be a good alternative
+# names(PatientsInSeqinr) <- c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20")
 PatientsInSeqinrAligned <- msa(PatientsInSeqinr)
 PatientsInSeqinrAligned
 PatientsInSeqinr2 <- msaConvert(PatientsInSeqinrAligned, type = "seqinr::alignment")
@@ -66,6 +70,16 @@ print(The20SequencesAligned, show="complete")
 max(DistanceMatrix)
 min(DistanceMatrix)
 
+# a more programmatic way to do this: 
+# convert from distance to matrix so that we can access row/column names
+# then to a dataframe to use the dplyr package
+df.dist <- as.data.frame(as.matrix(DistanceMatrix, labels=TRUE))
+# filter the row containing the maximum value
+dplyr::filter(df.dist, Homo_sapiens_6 == max(df.dist))
+
+# or we could pull out which cell in the matrix has the maximum value:
+which(DistanceMatrix == max(DistanceMatrix))
+
 # The value "0.1184929" matches that of patient 6 based on the Distance Matrix
 
 # Now I shall translate patient 6's sequence to a protein by first
@@ -76,18 +90,28 @@ Translated20Sequences
 
 # But we need our most different sequence, which is patient 6 so lets single that out
 
-align <- readDNAStringSet("/Users/sergi/Documents/GitHub/Bioinformatics/sequences.fasta")
-class(align)
-Sequence6DNA <- align$Homo_sapiens_6
+# align <- readDNAStringSet("/Users/sergi/Documents/GitHub/Bioinformatics/sequences.fasta")
+# class(align)
+Sequence6DNA <- PatientsInSeqinr$Homo_sapiens_6 # no need to re-read data, already exists
 
 # Now we need to translate this sequence.
 
 Sequence6AA <- Biostrings::translate(Sequence6DNA)
 Sequence6AA
 
+# or:
+Sequence6AA <- Translated20Sequences$Homo_sapiens_6
+
 # Finally we must put it into a fasta file
 
-write.fasta(Biostrings::translate(Sequence6DNA),"Homo_sapiens_6","/Users/sergi/Documents/GitHub/Bioinformatics/TranslatePatient6.fasta",open = "w",nbchar = 60,as.string = FALSE)
+# write.fasta(Biostrings::translate(Sequence6DNA),"Homo_sapiens_6","/Users/sergi/Documents/GitHub/Bioinformatics/TranslatePatient6.fasta",open = "w",nbchar = 60,as.string = FALSE)
+
+# a bit shorter way to write this. Your sample was already translated, to that's repetitive
+# and the working directory is already the Bioinformatics folder, so you can just 
+# use the file name
+# if a line of code is very long, you can wrap it onto the next line right after any comma
+write.fasta(Sequence6AA, "Homo_sapiens_6", "TranslatePatient6.fasta", 
+            open = "w", nbchar = 60, as.string = FALSE)
 
 # I ran this through Uniprot and discovered the accession number closest to 
 # this sequence is A0A0J9YWK4, associated with the HBB gene. 
